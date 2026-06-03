@@ -4,3 +4,10 @@ node_modules/
 .DS_Store
 *.log
 *.bak
+
+# build / tooling output
+dist/
+dist-ssr/
+coverage/
+*.tsbuildinfo
+.vite/
