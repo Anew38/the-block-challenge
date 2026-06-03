@@ -53,6 +53,7 @@ function matches(item: InventoryItem, filters: InventoryFilters): boolean {
   if (filters.maxPrice !== null && item.currentBid > filters.maxPrice) {
     return false;
   }
+  if (filters.buyNowOnly && vehicle.buyNowPrice === null) return false;
   return true;
 }
 

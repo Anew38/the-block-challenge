@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   AlarmClock,
+  ChevronDown,
   FileWarning,
   Gauge,
   PiggyBank,
@@ -37,6 +38,19 @@ const TONE_CHIP: Record<InsightTone, string> = {
   caution: 'bg-amber-500/15 text-amber-300 ring-1 ring-amber-500/30',
 };
 
+const EXPANDED_STORAGE_KEY = 'block:insights-panel-expanded';
+
+function readExpandedPreference(): boolean {
+  try {
+    const stored = localStorage.getItem(EXPANDED_STORAGE_KEY);
+    if (stored === '0') return false;
+    if (stored === '1') return true;
+  } catch {
+    /* private mode or blocked storage */
+  }
+  return true;
+}
+
 interface InsightPanelProps {
   vehicle: Vehicle;
   bid: BidState;
@@ -51,17 +65,49 @@ interface InsightPanelProps {
  * from data we already have — no model call — and recomputed on the live tick.
  */
 export function InsightPanel({ vehicle, bid, timing, now }: InsightPanelProps) {
+  const [expanded, setExpanded] = useState(readExpandedPreference);
   const insights = useMemo(
     () => deriveInsights({ vehicle, bid, timing, catalog, now }),
     [vehicle, bid, timing, now]
   );
 
+  useEffect(() => {
+    try {
+      localStorage.setItem(EXPANDED_STORAGE_KEY, expanded ? '1' : '0');
+    } catch {
+      /* ignore */
+    }
+  }, [expanded]);
+
   return (
     <Panel
       title="AI insights"
       icon={Sparkles}
+      expanded={expanded}
       action={
-        <span className="text-xs text-slate-500">Rules-based · live</span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-slate-500">
+            {expanded
+              ? 'Rules-based · live'
+              : insights.length > 0
+                ? `${insights.length} insight${insights.length === 1 ? '' : 's'}`
+                : 'Collapsed'}
+          </span>
+          <button
+            type="button"
+            onClick={() => setExpanded((open) => !open)}
+            className="rounded-md p-1 text-slate-500 transition hover:bg-slate-800 hover:text-slate-300"
+            aria-expanded={expanded}
+            aria-label={expanded ? 'Hide AI insights' : 'Show AI insights'}
+          >
+            <ChevronDown
+              className={clsx(
+                'h-4 w-4 transition-transform',
+                !expanded && '-rotate-90'
+              )}
+            />
+          </button>
+        </div>
       }
     >
       {insights.length === 0 ? (

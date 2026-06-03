@@ -201,6 +201,19 @@ export function FilterBar({
           />
         </Field>
 
+        <Field label="Buy Now">
+          <div className="flex min-h-[2.375rem] items-center gap-2 rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2">
+            <input
+              id="filter-buy-now-only"
+              type="checkbox"
+              checked={filters.buyNowOnly}
+              onChange={(e) => setFilter('buyNowOnly', e.target.checked)}
+              className="h-4 w-4 rounded border-slate-600 bg-slate-900 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-slate-900"
+            />
+            <span className="text-sm text-slate-200">Has Buy Now price</span>
+          </div>
+        </Field>
+
         <Field label="Sort by">
           <select
             className={SELECT_CLASS}

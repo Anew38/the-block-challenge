@@ -32,6 +32,8 @@ export interface InventoryFilters {
   minGrade: number;
   minPrice: number | null;
   maxPrice: number | null;
+  /** When true, only lots with a non-null buy-now price. */
+  buyNowOnly: boolean;
   sort: SortKey;
 }
 
@@ -57,5 +59,6 @@ export const DEFAULT_FILTERS: InventoryFilters = {
   minGrade: 0,
   minPrice: null,
   maxPrice: null,
+  buyNowOnly: false,
   sort: 'ending-soon',
 };

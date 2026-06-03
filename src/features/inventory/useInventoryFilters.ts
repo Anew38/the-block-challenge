@@ -79,6 +79,7 @@ export function useInventoryFilters(): UseInventoryFilters {
       filters.minGrade > 0 ||
       filters.minPrice !== null ||
       filters.maxPrice !== null ||
+      filters.buyNowOnly ||
       filters.sort !== DEFAULT_FILTERS.sort
     );
   }, [filters, searchInput]);
