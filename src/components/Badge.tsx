@@ -11,12 +11,16 @@ export type BadgeTone =
   | 'slate';
 
 const TONE_STYLES: Record<BadgeTone, string> = {
-  emerald: 'bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/30',
-  sky: 'bg-sky-500/15 text-sky-300 ring-1 ring-sky-500/30',
-  amber: 'bg-amber-500/15 text-amber-300 ring-1 ring-amber-500/30',
-  rose: 'bg-rose-500/15 text-rose-300 ring-1 ring-rose-500/30',
-  indigo: 'bg-indigo-500/15 text-indigo-300 ring-1 ring-indigo-500/30',
-  slate: 'bg-slate-700/40 text-slate-300 ring-1 ring-slate-600/40',
+  emerald:
+    'bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/30 light:bg-emerald-500/15 light:text-emerald-700 light:ring-emerald-600/30',
+  sky: 'bg-sky-500/15 text-sky-300 ring-1 ring-sky-500/30 light:bg-sky-500/15 light:text-sky-700 light:ring-sky-600/30',
+  amber:
+    'bg-amber-500/15 text-amber-300 ring-1 ring-amber-500/30 light:bg-amber-500/15 light:text-amber-700 light:ring-amber-600/30',
+  rose: 'bg-rose-500/15 text-rose-300 ring-1 ring-rose-500/30 light:bg-rose-500/15 light:text-rose-700 light:ring-rose-600/30',
+  indigo:
+    'bg-indigo-500/15 text-indigo-300 ring-1 ring-indigo-500/30 light:bg-indigo-500/15 light:text-indigo-700 light:ring-indigo-600/30',
+  slate:
+    'bg-slate-700/40 text-slate-300 ring-1 ring-slate-600/40 light:bg-slate-200 light:text-slate-700 light:ring-slate-300',
 };
 
 interface BadgeProps {

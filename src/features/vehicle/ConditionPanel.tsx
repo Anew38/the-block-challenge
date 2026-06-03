@@ -16,9 +16,9 @@ const TITLE_TONE: Record<TitleStatus, BadgeTone> = {
 
 /** Greens for strong grades, amber mid-range, rose for rough lots. */
 function gradeTone(grade: number): string {
-  if (grade >= 4) return 'text-emerald-300';
-  if (grade >= 3) return 'text-amber-300';
-  return 'text-rose-300';
+  if (grade >= 4) return 'text-emerald-300 light:text-emerald-700';
+  if (grade >= 3) return 'text-amber-300 light:text-amber-700';
+  return 'text-rose-300 light:text-rose-700';
 }
 
 interface ConditionPanelProps {
@@ -54,7 +54,7 @@ export function ConditionPanel({ vehicle }: ConditionPanelProps) {
           </span>
         </div>
 
-        <p className="text-sm leading-relaxed text-slate-300">
+        <p className="text-sm leading-relaxed text-slate-300 light:text-slate-700">
           {conditionReport}
         </p>
 
@@ -63,7 +63,7 @@ export function ConditionPanel({ vehicle }: ConditionPanelProps) {
             Damage notes
           </h3>
           {damageNotes.length === 0 ? (
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-400 light:text-slate-600">
               No damage reported by the inspector.
             </p>
           ) : (
@@ -71,9 +71,9 @@ export function ConditionPanel({ vehicle }: ConditionPanelProps) {
               {damageNotes.map((note) => (
                 <li
                   key={note}
-                  className="flex items-start gap-2 text-sm text-slate-300"
+                  className="flex items-start gap-2 text-sm text-slate-300 light:text-slate-700"
                 >
-                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-400 light:text-amber-600" />
                   <span>{note}</span>
                 </li>
               ))}

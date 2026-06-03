@@ -5,6 +5,7 @@ import { catalog, vehicleCount } from '@/data/loader';
 import { useAuctionStore } from '@/features/bidding/auctionStore';
 import { useLiveInventorySim } from '@/features/bidding/useLiveAuction';
 import { useNow } from '@/lib/useNow';
+import { RecentlyViewedStrip } from '@/features/recentlyViewed/RecentlyViewedStrip';
 import { FilterBar } from './FilterBar';
 import { SearchInput } from './SearchInput';
 import { VehicleCard } from './VehicleCard';
@@ -39,11 +40,13 @@ export function InventoryPage() {
     <section className="flex flex-col gap-5">
       <header className="flex flex-col gap-1">
         <h1 className="text-2xl font-semibold tracking-tight">Inventory</h1>
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-slate-400 light:text-slate-600">
           Browse {vehicleCount} lots on the block. Search, filter, and open a
           lot to place a bid.
         </p>
       </header>
+
+      <RecentlyViewedStrip />
 
       <SearchInput value={searchInput} onChange={setSearchInput} />
 
@@ -55,7 +58,7 @@ export function InventoryPage() {
         clearAll={clearAll}
       />
 
-      <div className="flex items-center justify-between text-sm text-slate-400">
+      <div className="flex items-center justify-between text-sm text-slate-400 light:text-slate-600">
         <span aria-live="polite">
           {items.length} {items.length === 1 ? 'result' : 'results'}
           {items.length !== vehicleCount && ` of ${vehicleCount}`}

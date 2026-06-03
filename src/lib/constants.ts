@@ -27,3 +27,18 @@ export const DEFAULT_MIN_INCREMENT = 100;
 
 /** localStorage key for the persisted bid overlay. */
 export const BID_STORAGE_KEY = 'the-block:bids:v1';
+
+/** localStorage key for the persisted theme preference. */
+export const THEME_STORAGE_KEY = 'the-block:theme:v1';
+
+/** localStorage key for the persisted accessibility preferences. */
+export const A11Y_STORAGE_KEY = 'the-block:a11y:v1';
+
+/** localStorage key for the persisted inventory search/filter/sort state. */
+export const INVENTORY_FILTERS_STORAGE_KEY = 'the-block:inventory-filters:v1';
+
+/** localStorage key for the persisted recently-viewed vehicle ids. */
+export const RECENTLY_VIEWED_STORAGE_KEY = 'the-block:recently-viewed:v1';
+
+/** Most-recent vehicle ids retained for the "Recently viewed" strip. */
+export const RECENTLY_VIEWED_LIMIT = 8;

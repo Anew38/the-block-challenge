@@ -23,7 +23,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
 
   if (images.length === 0) {
     return (
-      <div className="grid aspect-[4/3] w-full place-items-center gap-2 rounded-xl border border-slate-800 bg-slate-900/40 text-slate-600">
+      <div className="grid aspect-[4/3] w-full place-items-center gap-2 rounded-xl border border-slate-800 bg-slate-900/40 text-slate-600 light:border-slate-200 light:bg-white light:text-slate-400">
         <ImageOff className="h-8 w-8" />
         <span className="text-sm">No photos available</span>
       </div>
@@ -36,7 +36,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
   return (
     <div className="flex flex-col gap-3">
       <div
-        className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-slate-800 bg-slate-900/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+        className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-slate-800 bg-slate-900/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 light:border-slate-200 light:bg-white"
         tabIndex={0}
         role="region"
         aria-roledescription="carousel"
@@ -63,7 +63,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
               type="button"
               onClick={() => go(index - 1)}
               aria-label="Previous photo"
-              className="absolute left-3 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-slate-950/70 text-slate-200 opacity-0 backdrop-blur transition hover:bg-slate-950/90 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 group-hover:opacity-100"
+              className="absolute left-3 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-slate-950/70 text-slate-200 opacity-0 backdrop-blur transition hover:bg-slate-950/90 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 group-hover:opacity-100 light:bg-white/85 light:text-slate-700 light:hover:bg-white"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
@@ -71,12 +71,12 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
               type="button"
               onClick={() => go(index + 1)}
               aria-label="Next photo"
-              className="absolute right-3 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-slate-950/70 text-slate-200 opacity-0 backdrop-blur transition hover:bg-slate-950/90 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 group-hover:opacity-100"
+              className="absolute right-3 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-slate-950/70 text-slate-200 opacity-0 backdrop-blur transition hover:bg-slate-950/90 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 group-hover:opacity-100 light:bg-white/85 light:text-slate-700 light:hover:bg-white"
             >
               <ChevronRight className="h-5 w-5" />
             </button>
 
-            <span className="absolute bottom-3 right-3 rounded-full bg-slate-950/70 px-2.5 py-1 font-mono text-xs text-slate-300 backdrop-blur">
+            <span className="absolute bottom-3 right-3 rounded-full bg-slate-950/70 px-2.5 py-1 font-mono text-xs text-slate-300 backdrop-blur light:bg-white/85 light:text-slate-700">
               {index + 1} / {count}
             </span>
           </>
@@ -96,7 +96,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
                   'aspect-[4/3] w-full overflow-hidden rounded-lg border transition focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500',
                   i === index
                     ? 'border-indigo-500 ring-1 ring-indigo-500'
-                    : 'border-slate-800 hover:border-slate-600'
+                    : 'border-slate-800 hover:border-slate-600 light:border-slate-200 light:hover:border-slate-400'
                 )}
               >
                 <img

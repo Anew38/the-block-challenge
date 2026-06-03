@@ -94,13 +94,13 @@ export function BidPanel({ vehicle, timing }: BidPanelProps) {
   };
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4 sm:p-5">
+    <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4 sm:p-5 light:border-slate-200 light:bg-white light:shadow-sm light:shadow-slate-200/50">
       <div className="flex items-end justify-between gap-3">
         <div>
           <p className="text-[11px] uppercase tracking-wide text-slate-500">
             {timing.status === 'ended' ? 'Final bid' : 'Current bid'}
           </p>
-          <p className="text-3xl font-semibold text-slate-50">
+          <p className="text-3xl font-semibold text-slate-50 light:text-slate-900">
             {formatCurrency(bid.currentBid)}
           </p>
           <p className="mt-0.5 text-xs text-slate-500">
@@ -123,7 +123,7 @@ export function BidPanel({ vehicle, timing }: BidPanelProps) {
       </div>
 
       {!isLive ? (
-        <div className="mt-4 flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-800/30 px-3 py-3 text-sm text-slate-400">
+        <div className="mt-4 flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-800/30 px-3 py-3 text-sm text-slate-400 light:border-slate-200 light:bg-slate-100 light:text-slate-600">
           <Lock className="h-4 w-4 shrink-0" />
           <span>
             {timing.status === 'scheduled'
@@ -134,7 +134,7 @@ export function BidPanel({ vehicle, timing }: BidPanelProps) {
       ) : (
         <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-3">
           <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-slate-400">
+            <span className="text-xs font-medium text-slate-400 light:text-slate-600">
               Your bid (min {formatCurrency(minimum)})
             </span>
             <div className="flex items-center gap-2">
@@ -154,7 +154,7 @@ export function BidPanel({ vehicle, timing }: BidPanelProps) {
                     setFreshSuccess(null);
                   }}
                   aria-label="Bid amount in dollars"
-                  className="w-full rounded-lg border border-slate-700 bg-slate-950/60 py-2.5 pl-7 pr-3 text-sm font-medium text-slate-100 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950/60 py-2.5 pl-7 pr-3 text-sm font-medium text-slate-100 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 light:border-slate-300 light:bg-white light:text-slate-900"
                 />
               </div>
               <Button type="submit" variant="primary">
@@ -180,7 +180,7 @@ export function BidPanel({ vehicle, timing }: BidPanelProps) {
       {error && (
         <p
           role="alert"
-          className="mt-3 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-300"
+          className="mt-3 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-300 light:border-rose-600/40 light:text-rose-700"
         >
           {error}
         </p>
@@ -188,7 +188,7 @@ export function BidPanel({ vehicle, timing }: BidPanelProps) {
       {success && (
         <p
           role="status"
-          className="mt-3 flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300"
+          className="mt-3 flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300 light:border-emerald-600/40 light:text-emerald-700"
         >
           <CheckCircle2 className="h-4 w-4 shrink-0" />
           {success}

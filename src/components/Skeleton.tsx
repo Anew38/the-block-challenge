@@ -8,7 +8,10 @@ interface SkeletonProps {
 export function Skeleton({ className }: SkeletonProps) {
   return (
     <div
-      className={clsx('animate-pulse rounded-md bg-slate-800/60', className)}
+      className={clsx(
+        'animate-pulse rounded-md bg-slate-800/60 light:bg-slate-200',
+        className
+      )}
       aria-hidden="true"
     />
   );

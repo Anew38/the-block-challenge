@@ -5,7 +5,7 @@ import type { InventoryFilters, SortKey } from './types';
 import type { FilterOptions } from './useInventoryFilters';
 
 const SELECT_CLASS =
-  'rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2 text-sm text-slate-200 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500';
+  'rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2 text-sm text-slate-200 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 light:border-slate-300 light:bg-white light:text-slate-800 light:focus:border-indigo-500';
 
 const TITLE_STATUSES: TitleStatus[] = ['clean', 'rebuilt', 'salvage'];
 const AUCTION_STATUSES: AuctionStatus[] = ['live', 'scheduled', 'ended'];
@@ -28,7 +28,7 @@ interface FieldProps {
 
 function Field({ label, children }: FieldProps) {
   return (
-    <label className="flex flex-col gap-1 text-xs font-medium text-slate-400">
+    <label className="flex flex-col gap-1 text-xs font-medium text-slate-400 light:text-slate-600">
       {label}
       {children}
     </label>
@@ -60,9 +60,9 @@ export function FilterBar({
   };
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/30 p-4">
+    <div className="rounded-xl border border-slate-800 bg-slate-900/30 p-4 light:border-slate-200 light:bg-white">
       <div className="mb-3 flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm font-medium text-slate-300">
+        <div className="flex items-center gap-2 text-sm font-medium text-slate-300 light:text-slate-700">
           <SlidersHorizontal className="h-4 w-4 text-slate-500" />
           Filters &amp; sort
         </div>
@@ -70,7 +70,7 @@ export function FilterBar({
           <button
             type="button"
             onClick={clearAll}
-            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-slate-400 hover:bg-slate-800 hover:text-slate-200 light:text-slate-600 light:hover:bg-slate-100 light:hover:text-slate-800"
           >
             <X className="h-3.5 w-3.5" />
             Clear all
@@ -202,15 +202,17 @@ export function FilterBar({
         </Field>
 
         <Field label="Buy Now">
-          <div className="flex min-h-[2.375rem] items-center gap-2 rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2">
+          <div className="flex min-h-[2.375rem] items-center gap-2 rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2 light:border-slate-300 light:bg-white">
             <input
               id="filter-buy-now-only"
               type="checkbox"
               checked={filters.buyNowOnly}
               onChange={(e) => setFilter('buyNowOnly', e.target.checked)}
-              className="h-4 w-4 rounded border-slate-600 bg-slate-900 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-slate-900"
+              className="h-4 w-4 rounded border-slate-600 bg-slate-900 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-slate-900 light:border-slate-400 light:bg-white light:focus:ring-offset-white"
             />
-            <span className="text-sm text-slate-200">Has Buy Now price</span>
+            <span className="text-sm text-slate-200 light:text-slate-800">
+              Has Buy Now price
+            </span>
           </div>
         </Field>
 

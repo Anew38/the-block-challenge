@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { catalog } from '@/data/loader';
+import { useInventoryFiltersStore } from './inventoryFiltersStore';
 import { distinct } from './inventorySelectors';
 import { DEFAULT_FILTERS, type InventoryFilters } from './types';
 
@@ -31,33 +32,24 @@ export interface UseInventoryFilters {
 
 /**
  * Owns the inventory query state: debounced free-text search plus the structured
- * filters and sort. Keeps the raw input responsive while only committing the
- * debounced term to `filters`, which drives the (more expensive) selection.
+ * filters and sort. State lives in a persisted Zustand store, so the exact view
+ * survives navigation and reloads; this hook only layers on the search debounce
+ * and the derived option lists / active-filter flag.
  */
 export function useInventoryFilters(): UseInventoryFilters {
-  const [filters, setFilters] = useState<InventoryFilters>(DEFAULT_FILTERS);
-  const [searchInput, setSearchInput] = useState('');
+  const filters = useInventoryFiltersStore((s) => s.filters);
+  const searchInput = useInventoryFiltersStore((s) => s.searchInput);
+  const setSearchInput = useInventoryFiltersStore((s) => s.setSearchInput);
+  const setSearch = useInventoryFiltersStore((s) => s.setSearch);
+  const setFilter = useInventoryFiltersStore((s) => s.setFilter);
+  const clearAll = useInventoryFiltersStore((s) => s.clearAll);
 
+  // Keep the raw input responsive while only committing the debounced term to
+  // `filters.search`, which drives the (more expensive) selection.
   useEffect(() => {
-    const id = setTimeout(() => {
-      setFilters((prev) =>
-        prev.search === searchInput ? prev : { ...prev, search: searchInput }
-      );
-    }, SEARCH_DEBOUNCE_MS);
+    const id = setTimeout(() => setSearch(searchInput), SEARCH_DEBOUNCE_MS);
     return () => clearTimeout(id);
-  }, [searchInput]);
-
-  const setFilter = useCallback(
-    <K extends keyof InventoryFilters>(key: K, value: InventoryFilters[K]) => {
-      setFilters((prev) => ({ ...prev, [key]: value }));
-    },
-    []
-  );
-
-  const clearAll = useCallback(() => {
-    setSearchInput('');
-    setFilters(DEFAULT_FILTERS);
-  }, []);
+  }, [searchInput, setSearch]);
 
   const options = useMemo<FilterOptions>(
     () => ({
