@@ -12,6 +12,7 @@ import { BidHistory } from './BidHistory';
 import { BidPanel } from './BidPanel';
 import { ConditionPanel } from './ConditionPanel';
 import { ImageGallery } from './ImageGallery';
+import { InsightPanel } from './InsightPanel';
 import { SpecSheet } from './SpecSheet';
 
 export function VehicleDetailPage() {
@@ -82,6 +83,7 @@ function VehicleDetail({ vehicle }: { vehicle: Vehicle }) {
 
         <div className="flex flex-col gap-6 lg:sticky lg:top-20 lg:self-start">
           <BidPanel vehicle={vehicle} timing={timing} />
+          <InsightPanel vehicle={vehicle} bid={bid} timing={timing} now={now} />
           <AuctionDetails vehicle={vehicle} timing={timing} />
           <BidHistory history={bid.history} />
         </div>

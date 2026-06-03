@@ -43,7 +43,13 @@ export function BidPanel({ vehicle, timing }: BidPanelProps) {
 
   const [amount, setAmount] = useState(() => String(minimum));
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [freshSuccess, setFreshSuccess] = useState<string | null>(null);
+
+  const isHighBidder =
+    bid.history.length > 0 && bid.history[0].source === 'you';
+
+  const success =
+    freshSuccess ?? (isHighBidder ? 'You\u2019re the high bidder.' : null);
 
   // Keep the input at or above the live minimum as rival/own bids raise it.
   useEffect(() => {
@@ -55,6 +61,11 @@ export function BidPanel({ vehicle, timing }: BidPanelProps) {
     });
   }, [minimum]);
 
+  // Clear the transient success when a rival outbids (derived state takes over).
+  useEffect(() => {
+    if (!isHighBidder) setFreshSuccess(null);
+  }, [isHighBidder]);
+
   const isLive = timing.status === 'live';
   const buyNowAvailable =
     vehicle.buyNowPrice !== null && bid.currentBid < vehicle.buyNowPrice;
@@ -64,9 +75,9 @@ export function BidPanel({ vehicle, timing }: BidPanelProps) {
     const result = placeBid(vehicle.id, Number(amount));
     if (result.ok) {
       setError(null);
-      setSuccess('Bid placed — you’re the high bidder.');
+      setFreshSuccess('Bid placed \u2014 you\u2019re the high bidder.');
     } else {
-      setSuccess(null);
+      setFreshSuccess(null);
       setError(result.error ?? 'Unable to place bid.');
     }
   };
@@ -75,9 +86,9 @@ export function BidPanel({ vehicle, timing }: BidPanelProps) {
     const result = buyNow(vehicle.id);
     if (result.ok) {
       setError(null);
-      setSuccess('Purchased at the Buy Now price.');
+      setFreshSuccess('Purchased at the Buy Now price.');
     } else {
-      setSuccess(null);
+      setFreshSuccess(null);
       setError(result.error ?? 'Unable to buy now.');
     }
   };
@@ -140,7 +151,7 @@ export function BidPanel({ vehicle, timing }: BidPanelProps) {
                   onChange={(e) => {
                     setAmount(e.target.value);
                     setError(null);
-                    setSuccess(null);
+                    setFreshSuccess(null);
                   }}
                   aria-label="Bid amount in dollars"
                   className="w-full rounded-lg border border-slate-700 bg-slate-950/60 py-2.5 pl-7 pr-3 text-sm font-medium text-slate-100 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
