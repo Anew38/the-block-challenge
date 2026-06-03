@@ -34,6 +34,64 @@ describe('computeDealScore — output shape', () => {
   });
 });
 
+describe('computeDealScore — calibration', () => {
+  it('lands a thoroughly average car in the 6–7.9 medium band', () => {
+    // Average across all three factors: mileage at the same-year median (ratio
+    // 1.0 → 0.5), mid year within the catalog range (→ 0.5), and a bid at half
+    // the Buy Now ceiling (→ 0.5).
+    const subject = makeTestVehicle({
+      id: 'subject',
+      year: 2020,
+      odometerKm: 60_000,
+      buyNowPrice: 20_000,
+    });
+    const peers = Array.from({ length: 3 }, (_, i) =>
+      makeTestVehicle({ id: `peer-${i}`, year: 2020, odometerKm: 60_000 }),
+    );
+    const range = [
+      makeTestVehicle({ id: 'oldest', year: 2015 }),
+      makeTestVehicle({ id: 'newest', year: 2025 }),
+    ];
+    const catalog = [subject, ...peers, ...range];
+
+    const { score } = computeDealScore({
+      vehicle: subject,
+      currentBid: 10_000,
+      catalog,
+    });
+
+    expect(score).toBeGreaterThanOrEqual(6);
+    expect(score).toBeLessThanOrEqual(7.9);
+  });
+
+  it('scores a good-deal find at 7.0 or higher', () => {
+    // Average mileage and year, but a standout price: the bid sits at a fifth of
+    // the Buy Now ceiling, which should be enough to read as a good deal.
+    const subject = makeTestVehicle({
+      id: 'subject',
+      year: 2020,
+      odometerKm: 60_000,
+      buyNowPrice: 20_000,
+    });
+    const peers = Array.from({ length: 3 }, (_, i) =>
+      makeTestVehicle({ id: `peer-${i}`, year: 2020, odometerKm: 60_000 }),
+    );
+    const range = [
+      makeTestVehicle({ id: 'oldest', year: 2015 }),
+      makeTestVehicle({ id: 'newest', year: 2025 }),
+    ];
+    const catalog = [subject, ...peers, ...range];
+
+    const { score } = computeDealScore({
+      vehicle: subject,
+      currentBid: 4_000,
+      catalog,
+    });
+
+    expect(score).toBeGreaterThanOrEqual(7);
+  });
+});
+
 describe('computeDealScore — mileage sub-score', () => {
   it('rewards below-median mileage for the model year', () => {
     const low = makeTestVehicle({ odometerKm: 30_000 });

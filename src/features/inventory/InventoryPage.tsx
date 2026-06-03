@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PackageOpen } from 'lucide-react';
 import { Button, EmptyState } from '@/components';
 import { catalog, vehicleCount } from '@/data/loader';
@@ -7,10 +7,14 @@ import { useLiveInventorySim } from '@/features/bidding/useLiveAuction';
 import { useNow } from '@/lib/useNow';
 import { RecentlyViewedStrip } from '@/features/recentlyViewed/RecentlyViewedStrip';
 import { FilterBar } from './FilterBar';
+import { Pagination } from './Pagination';
 import { SearchInput } from './SearchInput';
 import { VehicleCard } from './VehicleCard';
 import { selectInventory } from './inventorySelectors';
 import { useInventoryFilters } from './useInventoryFilters';
+
+/** Lots shown per page in the inventory grid. */
+const PAGE_SIZE = 20;
 
 export function InventoryPage() {
   const {
@@ -36,6 +40,24 @@ export function InventoryPage() {
     [overlay, filters, now]
   );
 
+  const [page, setPage] = useState(1);
+
+  // Jump back to the first page whenever the filtered result set changes.
+  useEffect(() => {
+    setPage(1);
+  }, [filters]);
+
+  const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+  // Clamp in case the result set shrank below the active page.
+  const currentPage = Math.min(page, totalPages);
+  const pageStart = (currentPage - 1) * PAGE_SIZE;
+  const pageItems = items.slice(pageStart, pageStart + PAGE_SIZE);
+
+  const goToPage = (next: number) => {
+    setPage(next);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <section className="flex flex-col gap-5">
       <header className="flex flex-col gap-1">
@@ -60,8 +82,12 @@ export function InventoryPage() {
 
       <div className="flex items-center justify-between text-sm text-slate-400 light:text-slate-600">
         <span aria-live="polite">
-          {items.length} {items.length === 1 ? 'result' : 'results'}
-          {items.length !== vehicleCount && ` of ${vehicleCount}`}
+          {items.length === 0
+            ? '0 results'
+            : `Showing ${pageStart + 1}–${pageStart + pageItems.length} of ${items.length} ${items.length === 1 ? 'result' : 'results'}`}
+          {items.length !== vehicleCount && items.length > 0 && (
+            <span className="text-slate-500"> ({vehicleCount} total)</span>
+          )}
         </span>
       </div>
 
@@ -79,13 +105,21 @@ export function InventoryPage() {
           }
         />
       ) : (
-        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {items.map((item) => (
-            <li key={item.vehicle.id}>
-              <VehicleCard item={item} />
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {pageItems.map((item) => (
+              <li key={item.vehicle.id}>
+                <VehicleCard item={item} />
+              </li>
+            ))}
+          </ul>
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={goToPage}
+          />
+        </>
       )}
     </section>
   );

@@ -25,6 +25,15 @@ const ASSUMED_ANNUAL_KM = 18_000;
 /** Smallest same-model-year cohort we trust for a median comparison. */
 const MIN_COHORT = 3;
 
+/**
+ * Linear map from the blended 0–1 quality onto the 0–10 scale. Calibrated so a
+ * middling car (blend ≈ 0.5) lands near 7.5 and an above-average "good deal"
+ * (blend ≳ 0.55) sits comfortably above 8, with stronger deals topping out at 10
+ * and weaker ones dropping toward the middle. Anchors: 0.5 → 7.5 and 0.6 → 8.5.
+ */
+const SCORE_SLOPE = 10;
+const SCORE_INTERCEPT = 2.5;
+
 export interface DealScore {
   /** Blended score on a 0–10 scale, rounded to one decimal. */
   score: number;
@@ -152,8 +161,11 @@ export function computeDealScore({
     components.year * DEAL_SCORE_WEIGHTS.year +
     components.value * DEAL_SCORE_WEIGHTS.value;
 
+  // Recenter the blend so average cars sit mid-scale and good deals clear 7.
+  const scaled = clamp(SCORE_INTERCEPT + SCORE_SLOPE * blended, 0, 10);
+
   return {
-    score: Math.round(blended * 10 * 10) / 10,
+    score: Math.round(scaled * 10) / 10,
     components,
   };
 }

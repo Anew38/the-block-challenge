@@ -1,4 +1,4 @@
-# The Block — Buyer-Side Auction Prototype
+# The Chopping Block — Buyer-Side Auction Prototype
 
 A frontend prototype of the **buyer side** of a vehicle auction marketplace, built for the
 OPENLANE coding challenge. Browse a catalog of 200 vehicles, drill into a detailed lot view,
@@ -105,6 +105,48 @@ The core buyer journey, end to end:
 - **Responsive** desktop + mobile layouts, code-split routes with skeleton loading states, and
   a 404 route.
 
+### Post-MVP enhancements
+
+Layered on the core workflow without a backend — all client-side, mostly persisted to
+`localStorage` via Zustand:
+
+- **Saved search state** — inventory search, filters, and sort survive navigation into a lot
+  and back, plus full page reloads (`inventoryFiltersStore`). Active filters stay visible with
+  a single **Clear all** action.
+- **Recently viewed** — the last 8 opened lots (most-recent-first, de-duplicated) appear as a
+  horizontal strip of compact cards on the inventory page; visiting a detail page records the
+  lot automatically.
+- **Smart Recommendations (AI-inspired)** — on the detail page, a rule-based “Similar Vehicles”
+  section ranks the catalog by make, model, body style, and price band (±20% of current/starting
+  bid), excluding the current lot and ended auctions. Labeled honestly as AI-inspired, not a
+  model call.
+- **Deal Score** — a single 0–10 score in the AI Insights panel (and on inventory cards),
+  blended from mileage vs. same-year catalog median, model-year recency, and bid amount relative
+  to starting / reserve / buy-now. Recalibrated so average lots land near the mid-7s and strong
+  value clears 8+.
+- **Accessibility menu (shell)** — a floating button opens a keyboard-accessible popover
+  (focus trap, Esc to close) with persisted toggles for larger text, high contrast, reduce
+  motion, underline links, dyslexia-friendly font, and screen-reader hints. Toggles are UI
+  placeholders for now; the menu UX and persistence are in place for incremental wiring.
+- **Light / dark theme** — header toggle with persisted preference and `light:` Tailwind
+  variants across shared primitives and feature surfaces.
+- **Bid history pagination** — shows the 8 most recent bids first, with **Show 10 more** to
+  expand older entries without scrolling through long histories.
+
+### UX polish
+
+- **Two-step bid confirmation** — placing a bid or using Buy Now validates up front, then
+  stages an inline confirm step (auto-focused Confirm, Esc to go back) before committing.
+- **Toast notifications** — success and error toasts for bid and Buy Now outcomes, so feedback
+  stays visible when scrolled away from the bid panel.
+- **Inventory pagination** — 20 lots per page with numbered controls, ellipses for long ranges,
+  and prev/next arrows; the result counter shows “Showing N–M of K”; changing filters resets
+  to page 1 and scrolls smoothly to the top.
+- **Scroll reset on navigation** — opening a lot or returning to inventory starts at the top
+  of the page.
+- **Branding** — app title and header wordmark updated to **The Chopping Block · Car Auction
+  Site**.
+
 ## Architecture & Notable Decisions
 
 - **Normalize at the boundary.** The raw dataset is snake_case; it's parsed once into a
@@ -126,6 +168,16 @@ The core buyer journey, end to end:
   urgency, title-status caution). I chose this deliberately: it's fast, offline-safe, and
   testable for a prototype, while leaving a clean seam to swap in a real model behind
   `deriveInsights` later.
+- **Deal Score and similarity share the same philosophy.** `dealScore.ts` and
+  `similarity.ts` are small, pure functions over the catalog and live bid overlay — no LLM,
+  no extra dependencies. Deal Score uses a slope/intercept remap so the 0–10 scale reads
+  intuitively to buyers (average ≈ 7.5, good deals ≥ 8).
+- **Several slices persist independently.** Beyond the bid overlay: inventory filters,
+  recently viewed IDs, accessibility toggle state, theme preference, and insight-panel collapse
+  each get their own Zustand store (most with `persist`). Toasts are intentionally ephemeral.
+- **Bid confirmation before mutation.** The bid panel validates with `validateBid` first, then
+  commits through the store only after an explicit confirm — reducing accidental bids while
+  keeping the flow inline (no modal library).
 - **Timing is derived, not stored.** `auction_start` timestamps are synthetic, so they're
   remapped onto a rolling window around "now" to produce a realistic live/scheduled/ended mix
   on every load, while preserving relative ordering so "ending soon" stays meaningful. Each
@@ -141,17 +193,24 @@ The core buyer journey, end to end:
 
 ```text
 src/
-  app/            router, layout shell, 404
-  components/     shared primitives (Button, Badge, Stat, EmptyState, Skeleton, StatusBadge)
+  app/              router, layout shell, 404
+  components/       shared primitives (Button, Badge, Stat, EmptyState, Skeleton, StatusBadge)
   features/
-    inventory/    InventoryPage, FilterBar, SearchInput, VehicleCard, filters/selectors
-    vehicle/      VehicleDetailPage, ImageGallery, SpecSheet, ConditionPanel, AuctionDetails,
-                  BidPanel, BidHistory, InsightPanel, insightLogic (pure), Panel (shared card)
-    bidding/      auctionStore (persisted), bidLogic (pure), useLiveAuction
-  data/           vehicles.json, loader, normalize, timing, types
-  lib/            format, constants (increment tiers), useNow
-  styles/         Tailwind entry
-tests/            bidLogic.test.ts, insightLogic.test.ts, VehicleCard.test.tsx
+    inventory/      InventoryPage, FilterBar, SearchInput, VehicleCard, CompactVehicleCard,
+                      Pagination, inventoryFiltersStore, filters/selectors
+    vehicle/        VehicleDetailPage, ImageGallery, SpecSheet, ConditionPanel, AuctionDetails,
+                      BidPanel, BidHistory, InsightPanel, insightLogic (pure), Panel
+    bidding/        auctionStore (persisted), bidLogic (pure), useLiveAuction
+    insights/       dealScore (pure), DealScoreBadge
+    recommendations/ similarity (pure), SimilarVehicles
+    recentlyViewed/ recentlyViewedStore, RecentlyViewedStrip
+    accessibility/  AccessibilityButton, AccessibilityMenu, accessibilityStore
+    theme/          ThemeToggle, themeStore
+    toast/          toastStore, ToastViewport
+  data/             vehicles.json, loader, normalize, timing, types
+  lib/              format, constants (increment tiers), useNow
+  styles/           Tailwind entry
+tests/              bidLogic, insightLogic, dealScore, similarity, VehicleCard
 ```
 
 ## Assumptions and Scope
@@ -165,7 +224,8 @@ tests/            bidLogic.test.ts, insightLogic.test.ts, VehicleCard.test.tsx
 
 Intentionally **deferred** to respect the time box: watchlist/favorites, proxy/max auto-bids,
 image zoom/lightbox, vehicle comparison, a real backend/websockets, list virtualization (200
-rows render fine), a deep accessibility audit, and end-to-end tests.
+rows render fine with client-side pagination), wiring the accessibility toggles to real CSS
+effects (the menu shell exists), and end-to-end tests.
 
 ## AI Tooling
 
@@ -213,14 +273,21 @@ Focused on the highest-risk and highest-value surfaces rather than blanket cover
 - **`VehicleCard.test.tsx`** — a component smoke test verifying a card renders the key
   buyer-facing fields.
 
-Run with `npm run test` (28 tests across the three files).
+- **`dealScore.test.ts`** — unit tests for Deal Score output shape, calibration bands (average
+  vs. good-deal lots), and mileage sub-score behavior.
+- **`similarity.test.ts`** — unit tests for the similar-vehicles scorer (weighting, price band,
+  exclusions).
+
+Run with `npm run test` (43 tests across five files).
 
 ## What I'd Do With More Time
 
 - Wire a real backend + websockets so bids and "live" state are genuinely shared, replacing the
   client-side simulation.
 - Add a watchlist and proxy/max auto-bidding (common, high-value buyer features).
-- Virtualize the inventory grid to scale well beyond a few hundred lots.
+- Virtualize the inventory grid to scale well beyond a few hundred lots (pagination handles
+  the current 200-lot catalog comfortably).
 - Image lightbox/zoom and richer condition media.
-- A proper accessibility pass (focus management, ARIA on interactive auction controls) and
-  end-to-end coverage of the browse → bid flow.
+- Connect the accessibility menu toggles to real document-level styles (the shell and
+  persistence are already in place).
+- End-to-end coverage of the browse → confirm → bid flow.
