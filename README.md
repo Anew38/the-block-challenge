@@ -10,7 +10,7 @@ The original challenge brief is preserved in [`CHALLENGE.md`](CHALLENGE.md).
 ## How to Run
 
 Requires **Node.js 20+** (see [`.nvmrc`](.nvmrc)).
-
+After navigating to the home main folder of this repository:
 ```bash
 npm install
 npm run dev
@@ -177,8 +177,7 @@ keeping all product decisions and the highest-risk logic under direct review.
 - Scaffolding repetitive UI surfaces: card, panel, skeleton, and badge variants; filter-bar
   layout; the shape of the spec sheet and condition block.
 - Iterating on Tailwind class lists and microcopy (empty states, status labels, error messages).
-- Drafting first-cut test cases around bid-logic edge conditions, which I then audited and
-  pruned.
+- Drafting first-cut test cases around bid-logic edge conditions, which I then reviewed and implemented.
 - Exploring tradeoffs out loud — store shape, where to put timing normalization, how to keep
   the persisted overlay lean — before committing to an approach.
 
@@ -217,10 +216,11 @@ Run with `npm run test` (28 tests across the three files).
 
 ## What I'd Do With More Time
 
+- Implement more AI features similar to OpenLane platform such as agent bidding within a range.
 - Wire a real backend + websockets so bids and "live" state are genuinely shared, replacing the
   client-side simulation.
 - Add a watchlist and proxy/max auto-bidding (common, high-value buyer features).
 - Virtualize the inventory grid to scale well beyond a few hundred lots.
-- Image lightbox/zoom and richer condition media.
+- More creativity with UI design and color scheming.
 - A proper accessibility pass (focus management, ARIA on interactive auction controls) and
   end-to-end coverage of the browse → bid flow.
