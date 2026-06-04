@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, SearchX } from 'lucide-react';
 import { buttonClasses, EmptyState } from '@/components';
@@ -7,6 +8,8 @@ import type { Vehicle } from '@/data/types';
 import { useNow } from '@/lib/useNow';
 import { useBidState } from '@/features/bidding/auctionStore';
 import { useLiveAuction } from '@/features/bidding/useLiveAuction';
+import { useRecentlyViewedStore } from '@/features/recentlyViewed/recentlyViewedStore';
+import { SimilarVehicles } from '@/features/recommendations/SimilarVehicles';
 import { AuctionDetails } from './AuctionDetails';
 import { BidHistory } from './BidHistory';
 import { BidPanel } from './BidPanel';
@@ -47,6 +50,12 @@ function VehicleDetail({ vehicle }: { vehicle: Vehicle }) {
   // Simulate rival bidding while this lot is live, so the price moves on its own.
   useLiveAuction(vehicle);
 
+  // Record the visit so the inventory "Recently viewed" rail can surface it.
+  const addRecent = useRecentlyViewedStore((s) => s.addRecent);
+  useEffect(() => {
+    addRecent(vehicle.id);
+  }, [vehicle.id, addRecent]);
+
   const timing = computeTiming(vehicle, now);
   const title = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
 
@@ -55,16 +64,18 @@ function VehicleDetail({ vehicle }: { vehicle: Vehicle }) {
       <div className="flex flex-col gap-3">
         <Link
           to="/"
-          className="inline-flex w-fit items-center gap-1.5 text-sm text-slate-400 transition hover:text-slate-200"
+          className="inline-flex w-fit items-center gap-1.5 text-sm text-slate-400 transition hover:text-slate-200 light:text-slate-600 light:hover:text-slate-900"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to inventory
         </Link>
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-50">
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-50 light:text-slate-900">
             {title}
           </h1>
-          <span className="text-lg text-slate-400">{vehicle.trim}</span>
+          <span className="text-lg text-slate-400 light:text-slate-600">
+            {vehicle.trim}
+          </span>
           <span className="ml-auto font-mono text-sm text-slate-500">
             Lot {vehicle.lot}
           </span>
@@ -88,6 +99,8 @@ function VehicleDetail({ vehicle }: { vehicle: Vehicle }) {
           <BidHistory history={bid.history} />
         </div>
       </div>
+
+      <SimilarVehicles vehicle={vehicle} now={now} />
     </section>
   );
 }

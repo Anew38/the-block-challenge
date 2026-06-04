@@ -31,11 +31,11 @@ export function AuctionDetails({ vehicle, timing }: AuctionDetailsProps) {
           className={clsx(
             'flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium',
             timing.status === 'live' &&
-              'border-emerald-500/30 bg-emerald-500/10 text-emerald-300',
+              'border-emerald-500/30 bg-emerald-500/10 text-emerald-300 light:border-emerald-600/40 light:text-emerald-700',
             timing.status === 'scheduled' &&
-              'border-sky-500/30 bg-sky-500/10 text-sky-300',
+              'border-sky-500/30 bg-sky-500/10 text-sky-300 light:border-sky-600/40 light:text-sky-700',
             timing.status === 'ended' &&
-              'border-slate-700 bg-slate-800/40 text-slate-400'
+              'border-slate-700 bg-slate-800/40 text-slate-400 light:border-slate-300 light:bg-slate-100 light:text-slate-600'
           )}
         >
           <Timer className="h-4 w-4 shrink-0" />
@@ -66,7 +66,7 @@ export function AuctionDetails({ vehicle, timing }: AuctionDetailsProps) {
           <Stat label="Lot" value={vehicle.lot} mono />
         </dl>
 
-        <div className="flex flex-col gap-2 border-t border-slate-800 pt-3 text-sm text-slate-300">
+        <div className="flex flex-col gap-2 border-t border-slate-800 pt-3 text-sm text-slate-300 light:border-slate-200 light:text-slate-700">
           <p className="flex items-center gap-2">
             <Building2 className="h-4 w-4 shrink-0 text-slate-500" />
             {vehicle.sellingDealership}

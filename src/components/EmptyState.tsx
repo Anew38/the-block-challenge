@@ -22,13 +22,15 @@ export function EmptyState({
   return (
     <div
       className={clsx(
-        'grid place-items-center gap-3 rounded-xl border border-dashed border-slate-800 px-6 py-16 text-center',
+        'grid place-items-center gap-3 rounded-xl border border-dashed border-slate-800 px-6 py-16 text-center light:border-slate-300',
         className
       )}
     >
-      {Icon && <Icon className="h-8 w-8 text-slate-600" />}
+      {Icon && <Icon className="h-8 w-8 text-slate-600 light:text-slate-400" />}
       <div>
-        <p className="font-medium text-slate-300">{title}</p>
+        <p className="font-medium text-slate-300 light:text-slate-700">
+          {title}
+        </p>
         {description && (
           <p className="mx-auto mt-1 max-w-sm text-sm text-slate-500">
             {description}
